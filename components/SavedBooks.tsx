@@ -1,23 +1,39 @@
 "use client"
 import { Book } from "./BookDetails"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import BookCard from "./BookCard"
 import { FaArrowRightLong } from "react-icons/fa6";
 
 
-
 export default function SavedBooks({ book }: { book?: Book }) {
-    const savedBooks: Book[] = JSON.parse(localStorage.getItem('books') || '[]');
+    const [savedBooks, setSavedBooks] = useState<Book[]>([]);
+    const [isClient, setIsClient] = useState(false)
+
+    useEffect(() => {
+        setIsClient(true)
+        console.log("isclient", isClient)
+        const booksFromLocalStorage: Book[] = JSON.parse(localStorage.getItem('books') || '[]');
+        setSavedBooks(booksFromLocalStorage);
+    }, [])
 
     useEffect(() => {
         if (book) {
-            if (!savedBooks.find((savedBook: Book) => savedBook.id === book.id)) {
-                savedBooks.push(book)
-                localStorage.setItem("books", JSON.stringify(savedBooks))
-            }
+            setSavedBooks((prevBooks) => {
+                // ignore the current book
+                if (!prevBooks.find((savedBook) => savedBook.id === book.id)) {
+                    const updatedBooks = [...prevBooks, book];
+                    localStorage.setItem("books", JSON.stringify(updatedBooks));
+                    return updatedBooks;
+                }
+                return prevBooks;
+            });
         }
-    }, [book, savedBooks])
+    }, [book]);
+
+    console.log("main is client", isClient)
+
+    if (!isClient) return null;
 
 
     return savedBooks && savedBooks.filter((savedBook) => savedBook.id !== book?.id).length >= 1 ? (
