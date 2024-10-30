@@ -1,9 +1,14 @@
 "use client"
 import BookCard from "@/components/BookCard"
 import { Book } from "@/components/BookDetails";
-
+import { useEffect, useState } from "react";
 export default function Page() {
-    const savedBooks: Book[] = JSON.parse(localStorage.getItem('books') || '[]');
+    const [savedBooks, setSavedBooks] = useState<Book[]>([]);
+
+    useEffect(() => {
+        const booksFromLocalStorage: Book[] = JSON.parse(localStorage.getItem('books') || '[]');
+        setSavedBooks(booksFromLocalStorage);
+    }, []);
 
     return (
         <div className="px-6 md:px-24">
