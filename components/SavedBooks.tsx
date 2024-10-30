@@ -17,7 +17,7 @@ export default function SavedBooks({ book }: { book?: Book }) {
                 localStorage.setItem("books", JSON.stringify(savedBooks))
             }
         }
-    }, [savedBooks])
+    }, [book, savedBooks])
 
 
     return savedBooks && savedBooks.filter((savedBook) => savedBook.id !== book?.id).length >= 1 ? (
