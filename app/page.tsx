@@ -1,10 +1,5 @@
 import SavedBooks from '../components/SavedBooks';
 import Hero from '@/components/Hero';
-export async function fetchMetaData(query: string) {
-  const data = await fetch(`https://www.gutenberg.org/ebooks/${query}`)
-  const metaText = await data.text()
-  return metaText
-}
 
 export default async function Home() {
 
