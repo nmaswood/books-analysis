@@ -24,10 +24,9 @@
 
 ## Live Demo
 
-[Live Demo](https://https://books-analysis-ndaof9nsw-reems-projects-014b1e78.vercel.app//)
+[Live Demo](https://books-analysis.vercel.app)
 
-<!-- GETTING STARTED -->
-
+<!-- GETTING STARTED --> 
 ## Getting Started
 
 To get a local copy up and running, you can follow these simple example steps:
