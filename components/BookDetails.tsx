@@ -33,7 +33,7 @@ export default function BookDetails({ book }: { book: Book }) {
     const [summary, setSummary] = useState("");
     const [isloading, setIsLoading] = useState(false)
     const [isClient, setIsClient] = useState<boolean>(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState<string|undefined>(undefined)
     const [hasError, setHasError] = useState<boolean>(false)
     const { toast } = useToast()
 
@@ -62,18 +62,22 @@ export default function BookDetails({ book }: { book: Book }) {
         setHasError(false);
         try {
             const response = await fetch(`/api/text-analysis?id=${book.id}`)
+            const data = await response.json()
             if (response.ok) {
-                const updatedSummary = await response.json()
-                setSummary(updatedSummary.summary);
-                localStorage.setItem(`summary-${book.id}`, updatedSummary.summary);
+                setSummary(data.summary);
+                localStorage.setItem(`summary-${book.id}`, data.summary);
+            }
+            else {
+                setHasError(true);
+                setError(data.error)
             }
         } catch (error: unknown) {
-            setIsLoading(false);
+            console.log("in catch", hasError, error)
             setHasError(true)
             if (error instanceof Error) {
                 setError(error.message)
             } else {
-                setError("An unknown server error occurred.")
+                setError("An unknown error occurred")
             }
             setHasError(true);
         } finally {
@@ -87,9 +91,8 @@ export default function BookDetails({ book }: { book: Book }) {
 
     return (
         <div className="flex gap-6 flex-col md:flex-row">
-            <h1>{error}</h1>
             <div className="flex-shrink-0">
-                <Image src={book.coverArt} className="rounded-lg h-[300px] w-auto" width={200} height={300} alt={`Cover art of ${book.title}`} />
+                <Image src={book.coverArt? book.coverArt: "https://placehold.jp/30/808080/ffffff/200x300.png?text=placeholder"} className="rounded-lg h-[300px] w-auto" width={200} height={300} alt={`Cover art of ${book.title}`} />
                 <div className="flex gap-2 pt-2">
                     <Link href={`${book.downloadLink}`} className="text-primary dark:text-primary-dark underline hover:opacity-90">Download</Link>
                     <a target="_blank" href={`${book.readOnlineLink}`} rel="noopener noreferrer" className="text-primary dark:text-primary-dark underline hover:opacity-90">Read Online</a>
