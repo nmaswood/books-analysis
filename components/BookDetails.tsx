@@ -33,10 +33,8 @@ export default function BookDetails({ book }: { book: Book }) {
     const [summary, setSummary] = useState("");
     const [isloading, setIsLoading] = useState(false)
     const [isClient, setIsClient] = useState<boolean>(false)
+    const [error, setError] = useState("")
     const { toast } = useToast()
-
-    // useEffect(() => {
-    // })
 
     useEffect(() => {
         setIsClient(true)
@@ -46,30 +44,23 @@ export default function BookDetails({ book }: { book: Book }) {
         }
     }, []);
 
-    async function handleAnalysis(e: React.MouseEvent<HTMLButtonElement>) {
-        e.preventDefault()
+    async function handleAnalysis() {
+        // e.preventDefault()
         setIsLoading(true)
         try {
             const response = await fetch(`/api/text-analysis?id=${book.id}`)
-            const updatedSummary = await response.json()
-            setSummary(updatedSummary.summary);
-            localStorage.setItem(`summary-${book.id}`, updatedSummary.summary);
-            setIsLoading(false)
+            if (response.ok) {
+                const updatedSummary = await response.json()
+                setSummary(updatedSummary.summary);
+                localStorage.setItem(`summary-${book.id}`, updatedSummary.summary);
+            }
         } catch (error: unknown) {
+            setIsLoading(false);
             if (error instanceof Error) {
-                toast({
-                    variant: "destructive",
-                    title: "Uh oh! Something went wrong.",
-                    description: error.message,
-                    className: "bg-red-500 text-white"
-                });
+                setError(error.message)
+
             } else {
-                toast({
-                    variant: "destructive",
-                    title: "Uh oh! Something went wrong.",
-                    description: "An unknown error occurred.",
-                    className: "bg-red-500 text-white"
-                });
+                setError("An unknown error occurred")
             }
         } finally {
             setIsLoading(false);
@@ -82,6 +73,7 @@ export default function BookDetails({ book }: { book: Book }) {
 
     return (
         <div className="flex gap-6 flex-col md:flex-row">
+            <h1>{error}</h1>
             <div className="flex-shrink-0">
                 <Image src={book.coverArt} className="rounded-lg h-[300px] w-auto" width={200} height={300} alt={`Cover art of ${book.title}`} />
                 <div className="flex gap-2 pt-2">
@@ -93,7 +85,7 @@ export default function BookDetails({ book }: { book: Book }) {
             <div className="flex flex-col">
                 <div>
                     <h2 className="text-text dark:text-text-dark text-4xl font-semibold">{book.title}</h2>
-                    <p className="text-text dark:text-text-dark py-4">{summary}</p>
+                    <p className="text-text dark:text-text-dark py-4">{summary && summary}</p>
                     {isloading ?
                         <Button disabled className="text-white"
                         >
@@ -102,7 +94,15 @@ export default function BookDetails({ book }: { book: Book }) {
                         </Button>
                         :
                         <Button
-                            onClick={handleAnalysis}
+                            onClick={() => {
+                                handleAnalysis()
+                                toast({
+                                    variant: "destructive",
+                                    title: "Uh oh! Something went wrong.",
+                                    description: error,
+                                    className: "bg-red-500 text-white"
+                                });
+                            }}
                             className="bg-primary dark:bg-primary-dark text-white flex items-center rounded-lg hover:opacity-90 py-2 px-4">
                             <span>Generate summary</span>
                             <IoSparklesSharp className="mr-2 h-4 w-4" />
