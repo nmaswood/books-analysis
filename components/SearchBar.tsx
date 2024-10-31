@@ -1,14 +1,18 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Button } from "@/components/ui/button"
+import { ReloadIcon } from "@radix-ui/react-icons"
 
 export default function SearchBar() {
     const [query, setQuery] = useState<null | string>(null)
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
 
     const handleSearch = () => {
         if (query) {
-            router.push(`/books/${query}`);
+            setIsLoading(true)
+            router.push(`/books/${query}`)
         }
     }
 
@@ -27,9 +31,22 @@ export default function SearchBar() {
                             setQuery(e.target.value);
                         }}
                     />
-                    <button type="submit"
-                        onClick={() => handleSearch()}
-                        className="py-2 px-4 rounded-lg bg-primary dark:bg-primary-dark text-white w-fit hover:opacity-90">Search</button>
+                    {isLoading ?
+                        <Button disabled className="text-white"
+
+                        >
+                            Searching
+                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                        </Button>
+                        :
+                        <Button
+                        type="submit"
+                            onClick={() => handleSearch()}
+                            className="bg-primary dark:bg-primary-dark text-white flex items-center rounded-lg hover:opacity-90 py-2 px-4">
+                            Search
+                        </Button>
+                    }
+
 
                 </div>
 

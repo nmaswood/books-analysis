@@ -1,6 +1,5 @@
-import SavedBooks from '../components/SavedBooks';
 import Hero from '@/components/Hero';
-
+import SavedBooks from '@/components/SavedBooks';
 export default async function Home() {
 
   return (

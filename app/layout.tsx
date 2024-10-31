@@ -4,7 +4,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
-import { ThemeProvider } from "next-themes"
 import { Toaster } from "@/components/ui/toaster"
 
 
@@ -20,7 +19,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ThemeProvider attribute="class">
 
         <body
           className={`${inter.className} antialiased dark:bg-background-dark bg-background min-h-screen flex flex-col`}
@@ -30,10 +28,8 @@ export default function RootLayout({
             {children}
           </main>
           <Toaster />
-
           <Footer />
         </body>
-      </ThemeProvider>
     </html >
   );
 }
