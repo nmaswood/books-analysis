@@ -23,7 +23,6 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-
         const loader = new CheerioWebBaseLoader(bookContent);
 
         const docs = await loader.load();

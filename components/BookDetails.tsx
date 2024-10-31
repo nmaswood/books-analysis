@@ -34,6 +34,7 @@ export default function BookDetails({ book }: { book: Book }) {
     const [isloading, setIsLoading] = useState(false)
     const [isClient, setIsClient] = useState<boolean>(false)
     const [error, setError] = useState("")
+    const [hasError, setHasError] = useState<boolean>(false)
     const { toast } = useToast()
 
     useEffect(() => {
@@ -44,24 +45,40 @@ export default function BookDetails({ book }: { book: Book }) {
         }
     }, []);
 
+    useEffect(() => {
+        if (hasError) {
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: error,
+                className: "bg-red-500 text-white"
+            });
+            setHasError(false)
+        }
+    }, [hasError, error])
+
     async function handleAnalysis() {
-        // e.preventDefault()
         setIsLoading(true)
+        setHasError(false);
         try {
             const response = await fetch(`/api/text-analysis?id=${book.id}`)
             if (response.ok) {
                 const updatedSummary = await response.json()
                 setSummary(updatedSummary.summary);
                 localStorage.setItem(`summary-${book.id}`, updatedSummary.summary);
+            } else {
+                setHasError(true);
+                setError("Error fetching the analysis");
             }
         } catch (error: unknown) {
             setIsLoading(false);
+            setHasError(true)
             if (error instanceof Error) {
                 setError(error.message)
-
             } else {
                 setError("An unknown error occurred")
             }
+            setHasError(true);
         } finally {
             setIsLoading(false);
         }
@@ -96,12 +113,6 @@ export default function BookDetails({ book }: { book: Book }) {
                         <Button
                             onClick={() => {
                                 handleAnalysis()
-                                toast({
-                                    variant: "destructive",
-                                    title: "Uh oh! Something went wrong.",
-                                    description: error,
-                                    className: "bg-red-500 text-white"
-                                });
                             }}
                             className="bg-primary dark:bg-primary-dark text-white flex items-center rounded-lg hover:opacity-90 py-2 px-4">
                             <span>Generate summary</span>
@@ -163,7 +174,7 @@ export default function BookDetails({ book }: { book: Book }) {
                 </div>
 
             </div>
-        </div>
+        </div >
 
     )
 }
