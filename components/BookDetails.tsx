@@ -66,9 +66,6 @@ export default function BookDetails({ book }: { book: Book }) {
                 const updatedSummary = await response.json()
                 setSummary(updatedSummary.summary);
                 localStorage.setItem(`summary-${book.id}`, updatedSummary.summary);
-            } else {
-                setHasError(true);
-                setError("Error fetching the analysis");
             }
         } catch (error: unknown) {
             setIsLoading(false);
@@ -76,7 +73,7 @@ export default function BookDetails({ book }: { book: Book }) {
             if (error instanceof Error) {
                 setError(error.message)
             } else {
-                setError("An unknown error occurred")
+                setError("An unknown server error occurred.")
             }
             setHasError(true);
         } finally {
