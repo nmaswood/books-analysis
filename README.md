@@ -20,6 +20,9 @@
 - Summarizes the content of the book.
 - Download and read the book.
 
+## Optimation
+- Make the summarising faster, maybe test with other llms
+- Add pagination to the viewed books page
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -35,12 +38,7 @@ To get a local copy up and running, you can follow these simple example steps:
 ### Prerequisites
 
 - npm
-  ```sh
-  npm install npm@latest -g
-  ```
-- node
-
-- Open Ai and langchain accounts
+- Open AI and langchain accounts
 
 ### Setup
 
@@ -60,8 +58,5 @@ npm run dev
 ```
 
 
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
