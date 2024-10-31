@@ -31,26 +31,23 @@ export default function SearchBar() {
                             setQuery(e.target.value);
                         }}
                     />
-                    {isLoading ?
-                        <Button disabled className="text-white"
-
-                        >
-                            Searching
-                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                        </Button>
-                        :
-                        <Button
+                    <Button
                         type="submit"
-                            onClick={() => handleSearch()}
-                            className="bg-primary dark:bg-primary-dark text-white flex items-center rounded-lg hover:opacity-90 py-2 px-4">
-                            Search
-                        </Button>
-                    }
+                        onClick={handleSearch}
+                        disabled={isLoading}
+                        aria-live="polite"
+                        className="bg-primary dark:bg-primary-dark text-white flex items-center rounded-lg hover:opacity-90 py-2 px-4">
 
-
+                        {isLoading ? (
+                            <>
+                                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                                <span>Searching...</span>
+                            </>
+                        ) : (
+                            <span>Search</span>
+                        )}
+                    </Button>
                 </div>
-
-
             </form>
         </div >
     );

@@ -13,7 +13,7 @@ export default function BookCard({ book }: { book: Book }) {
             <div className="flex flex-col flex-grow justify-between">
                 <h4 className="text-text dark:text-text-dark text-xl py-3">{book.title}</h4>
                 <Link href={`/books/${book.id}`}
-                    className="py-2 px-4 rounded-lg bg-primary dark:bg-primary-dark text-white w-fit hover:opacity-90">
+                    className="py-2 px-4 text-sm rounded-lg bg-primary dark:bg-primary-dark text-white w-fit hover:opacity-90">
                     <span>Details</span>
                 </Link>
 

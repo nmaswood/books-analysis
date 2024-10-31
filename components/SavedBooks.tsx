@@ -12,7 +12,6 @@ export default function SavedBooks({ book }: { book?: Book }) {
 
     useEffect(() => {
         setIsClient(true)
-        console.log("isclient", isClient)
         const booksFromLocalStorage: Book[] = JSON.parse(localStorage.getItem('books') || '[]');
         setSavedBooks(booksFromLocalStorage);
     }, [])
@@ -31,8 +30,6 @@ export default function SavedBooks({ book }: { book?: Book }) {
         }
     }, [book]);
 
-    console.log("main is client", isClient)
-
     if (!isClient) return null;
 
 
@@ -44,15 +41,15 @@ export default function SavedBooks({ book }: { book?: Book }) {
                         Recently Viewed
                     </h2>
                 </div>
-                <Link href="/books/viewed" className="hidden border sm:border-primary dark:border-primary-dark text-primary dark:text-primary-dark sm:flex items-center rounded-lg md:px-6 px-2 md:py-2 py-1 gap-2 md:gap-5 group hover:opacity-90">
+                <Link href="/books/viewed" className="hidden border sm:border-primary dark:border-primary-dark text-primary dark:text-primary-dark sm:flex items-center rounded-lg md:px-4 px-2 md:py-2 py-1 gap-2 md:gap-3 group hover:opacity-90">
                     <span className="text-lg">See all</span>
                     <FaArrowRightLong className="h-5 w-5 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1" />
                 </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {
-                    savedBooks.filter((savedBook) => savedBook.id !== book?.id).slice(0, 8).map((book: Book, index: number) => (
-                        <div key={index} className="bg-secondary dark:bg-secondary-dark rounded-lg p-6 bg-opacity-50">
+                    savedBooks.filter((savedBook) => savedBook.id !== book?.id).slice(0, 8).map((book: Book) => (
+                        <div key={book.id} className="bg-secondary dark:bg-secondary-dark rounded-lg p-6 bg-opacity-50">
                             <BookCard book={book} />
                         </div>
                     ))

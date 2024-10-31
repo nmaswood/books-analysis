@@ -13,7 +13,6 @@ export default function Page() {
         return null;
     }
 
-    console.log("view page", isClient)
     const savedBooks : Book[] = JSON.parse(localStorage.getItem('books') || '[]');
 
 

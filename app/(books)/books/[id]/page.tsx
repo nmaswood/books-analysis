@@ -5,39 +5,46 @@ import BookDetails from '@/components/BookDetails';
 
 
 async function fetchBookData(id: string) {
-    const data = await fetch(`https://www.gutenberg.org/ebooks/${id}`)
-    const metaText = await data.text()
-    const $ = cheerio.load(metaText);
-    const title = $("h1[itemprop = 'name']").text()
-    const author = $("a[itemprop = 'creator']").text()
-    const summary = $("th:contains('Summary')").next().text().replace("(This is an automatically generated summary.)", "")
-    const publishedDate = $("td[itemprop = 'datePublished']").text()
-    const coverArt = $("img.cover-art").attr("src");
-    const downloadLink = $("a[type = 'application/zip']").parent().next().text()
-    const readOnlineLink = $("a[type = 'text/html']").parent().next().text()
-    const language = $("tr[itemprop= 'inLanguage'] td").text()
-    const updatedDate = $("td[itemprop= 'dateModified']").text()
+    try {
+        const data = await fetch(`https://www.gutenberg.org/ebooks/${id}`)
+        const metaText = await data.text()
+        const $ = cheerio.load(metaText);
+        const title = $("h1[itemprop='name']").text() || "Unknown Title";
+        const author = $("a[itemprop='creator']").text() || "Unknown Author";
+        const publishedDate = $("td[itemprop='datePublished']").text() || "Unknown Date";
+        const coverArt = $("img.cover-art").attr("src");
+        const downloadLink = $("a[type='application/zip']").attr("href") || "";
+        const readOnlineLink = $("a[type='text/html']").attr("href") || "";
+        const language = $("tr[itemprop='inLanguage'] td").text() || "Unknown Language";
+        const updatedDate = $("td[itemprop='dateModified']").text() || "Unknown Date";
 
-    const metaData: Book = {
-        id,
-        title: title,
-        author: author,
-        summary: summary,
-        publishedDate: publishedDate,
-        coverArt: coverArt as string,
-        downloadLink: downloadLink,
-        readOnlineLink: readOnlineLink,
-        language: language,
-        updatedDate: updatedDate
+        const metaData: Book = {
+            id,
+            title: title,
+            author: author,
+            publishedDate: publishedDate,
+            coverArt: coverArt as string,
+            downloadLink: downloadLink,
+            readOnlineLink: readOnlineLink,
+            language: language,
+            updatedDate: updatedDate
+        }
+
+        return metaData
+    } catch (error) {
+        console.error("Error fetching book data:", error);
+        return null;
     }
-
-    return metaData
 }
 
 
 export default async function BookPage({ params }: { params: { id: string } }) {
     const { id } = await params
-    const bookData: Book = await fetchBookData(id)
+    const bookData: Book | null = await fetchBookData(id)
+
+    if (!bookData) {
+        return <div className='text-red-500'>Error loading book data. Please try again later.</div>;
+    }
 
 
     return (

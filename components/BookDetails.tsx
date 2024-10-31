@@ -20,7 +20,6 @@ export interface Book {
     id: string,
     title: string,
     author: string,
-    summary: string,
     coverArt: string,
     downloadLink: string,
     readOnlineLink: string,
@@ -31,9 +30,9 @@ export interface Book {
 
 export default function BookDetails({ book }: { book: Book }) {
     const [summary, setSummary] = useState("");
-    const [isloading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [isClient, setIsClient] = useState<boolean>(false)
-    const [error, setError] = useState<string|undefined>(undefined)
+    const [error, setError] = useState<string | undefined>(undefined)
     const [hasError, setHasError] = useState<boolean>(false)
     const { toast } = useToast()
 
@@ -55,9 +54,9 @@ export default function BookDetails({ book }: { book: Book }) {
             });
             setHasError(false)
         }
-    }, [hasError, error])
+    }, [hasError, error, toast])
 
-    async function handleAnalysis() {
+    async function fetchSummary() {
         setIsLoading(true)
         setHasError(false);
         try {
@@ -74,12 +73,8 @@ export default function BookDetails({ book }: { book: Book }) {
         } catch (error: unknown) {
             console.log("in catch", hasError, error)
             setHasError(true)
-            if (error instanceof Error) {
-                setError(error.message)
-            } else {
-                setError("An unknown error occurred")
-            }
-            setHasError(true);
+            const message = error instanceof Error ? error.message : "An unknown error occurred.";
+            setError(message);
         } finally {
             setIsLoading(false);
         }
@@ -92,7 +87,7 @@ export default function BookDetails({ book }: { book: Book }) {
     return (
         <div className="flex gap-6 flex-col md:flex-row">
             <div className="flex-shrink-0">
-                <Image src={book.coverArt? book.coverArt: "https://placehold.jp/30/808080/ffffff/200x300.png?text=placeholder"} className="rounded-lg h-[300px] w-auto" width={200} height={300} alt={`Cover art of ${book.title}`} />
+                <Image src={book.coverArt} className="rounded-lg h-[300px] w-auto" width={200} height={300} alt={`Cover art of ${book.title}`} />
                 <div className="flex gap-2 pt-2">
                     <Link href={`${book.downloadLink}`} className="text-primary dark:text-primary-dark underline hover:opacity-90">Download</Link>
                     <a target="_blank" href={`${book.readOnlineLink}`} rel="noopener noreferrer" className="text-primary dark:text-primary-dark underline hover:opacity-90">Read Online</a>
@@ -102,23 +97,27 @@ export default function BookDetails({ book }: { book: Book }) {
             <div className="flex flex-col">
                 <div>
                     <h2 className="text-text dark:text-text-dark text-4xl font-semibold">{book.title}</h2>
-                    <p className="text-text dark:text-text-dark py-4">{summary && summary}</p>
-                    {isloading ?
-                        <Button disabled className="text-white"
-                        >
-                            Generating summary
-                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                        </Button>
-                        :
-                        <Button
-                            onClick={() => {
-                                handleAnalysis()
-                            }}
-                            className="bg-primary dark:bg-primary-dark text-white flex items-center rounded-lg hover:opacity-90 py-2 px-4">
-                            <span>Generate summary</span>
-                            <IoSparklesSharp className="mr-2 h-4 w-4" />
-                        </Button>
-                    }
+                    <p className="text-text dark:text-text-dark py-4" aria-live="polite">{summary && summary}</p>
+                    <Button
+                        onClick={fetchSummary}
+                        disabled={isLoading}
+                        aria-busy={isLoading}
+                        aria-live="polite"
+                        aria-label={isLoading ? "Generating summary" : "Generate summary"}
+                        className="bg-primary dark:bg-primary-dark text-white flex items-center rounded-lg hover:opacity-90 py-2 px-4"
+                    >
+                        {isLoading ? (
+                            <>
+                                <span>Generating summary</span>
+                                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                            </>
+                        ) : (
+                            <>
+                                <span>Generate summary</span>
+                                <IoSparklesSharp className="mr-2 h-4 w-4" />
+                            </>
+                        )}
+                    </Button>
 
                 </div>
                 <div>
