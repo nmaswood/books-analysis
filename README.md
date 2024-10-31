@@ -18,6 +18,7 @@
 - Fetch and display a book's metadata and content.
 - A list of all books viewed by a user.
 - Summarizes the content of the book.
+- Download and read the book.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -39,18 +40,20 @@ To get a local copy up and running, you can follow these simple example steps:
   ```
 - node
 
+- Open Ai and langchain accounts
+
 ### Setup
 
 
 
-1. Install the dependencies and devDependencies.
+To install the dependencies and devDependencies.
 
 ```sh
 npm install
 ```
-2. Change the .env.example in the root of the app to .env.local and add the necessary environment variables
+Change the .env.example file to .env.local and add the necessary environment variables
 
-3. start the app 
+To start the app 
 
 ```sh
 npm run dev
